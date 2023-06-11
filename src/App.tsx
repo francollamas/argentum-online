@@ -4,7 +4,7 @@ import { Bunny } from './Bunny'
 const App = () => {
     return (
         <>
-            <Stage width={300} height={300} options={{ backgroundAlpha: 1 }}>
+            <Stage width={300} height={300} options={{ backgroundAlpha: 0 }}>
                 <Container x={150} y={150}>
                     <Bunny />
                 </Container>
