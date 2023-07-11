@@ -1,7 +1,6 @@
 name: DEPLOY
 
 on:
-    pull_request:
     push:
         branches: ['develop']
 
@@ -32,14 +31,6 @@ jobs:
                   cache: 'npm'
             - name: Install dependencies
               run: npm install
-            - name: Modify vite.config.ts
-              uses: jaywcjlove/github-action-modify-file-content@main
-              with:
-                  path: vite.config.ts
-                  body: " base: '/argentum-online/' "
-                  openDelimiter: '/*base*/'
-                  closeDelimiter: '/*base-end*/'
-
             - name: Build
               run: npm run build
             - name: Setup Pages
