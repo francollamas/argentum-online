@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc && vite build && npx cap copy @capacitor-community/electron && npx cap sync",
+        "build": "tsc && vite build",
+        "sync": "npx cap copy @capacitor-community/electron && npx cap sync",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "prettier": "npx prettier --write .",
         "preview": "vite preview",
