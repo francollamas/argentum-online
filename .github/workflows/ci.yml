@@ -1,31 +1,34 @@
 name: Continuous Integration
 
 on:
-  pull_request:
-  push:
-    branches: ['develop', 'main']
+    pull_request:
+    push:
+        branches: ['develop', 'main']
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
 
-      - name: Setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
+            - name: Setup
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Build
-        run: npm run build
+            - name: Build
+              run: npm run build
 
-      - name: Check Format
-        run: npm run check-format
+            - name: Linter
+              run: npm run lint
+
+            - name: Check Format
+              run: npm run check-format
