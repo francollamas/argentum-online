@@ -1,12 +1,10 @@
-name: Continuous Integration
-
 on:
     pull_request:
     push:
         branches: ['develop', 'main']
 
 jobs:
-    build:
+    continuous-integration:
         runs-on: ubuntu-latest
 
         steps:
