@@ -1,31 +1,31 @@
 name: Continuous Integration
 
 on:
-    pull_request:
-    push:
-        branches: ['develop', 'main']
+  pull_request:
+  push:
+    branches: ['develop', 'main']
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                  ref: ${{ github.head_ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
 
-            - name: Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  cache: 'npm'
-            - run: npm ci
-            - run: npm run build
-            - run: npm run check-format
+      - name: Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
 
-            - name: Prettier
-              uses: creyD/prettier_action@v4.3
-              with:
-                  dry: True
-                  prettier_options: --check .
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check Format
+        run: npm run check-format
