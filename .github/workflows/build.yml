@@ -28,6 +28,11 @@ jobs:
             - name: Build
               run: npm run build
 
+            - name: Install Node.js, NPM and Yarn
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
             - name: Build/release Electron app
               uses: samuelmeuli/action-electron-builder@v1
               working-directory: ./electron
