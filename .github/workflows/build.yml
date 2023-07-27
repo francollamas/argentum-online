@@ -8,7 +8,7 @@ jobs:
 
         strategy:
             matrix:
-                os: [macos-latest, ubuntu-latest, windows-latest]
+                os: [macos-latest]
 
         steps:
             - name: Check out Git repository
@@ -18,18 +18,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 18
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Build
-              run: npm run build
-
-            - name: Install Node.js, NPM and Yarn
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  cache-dependency-path: ./electron/package-lock.json
+                  cache-dependency-path: .**/package-lock.json
 
             - name: Build/release Electron app
               uses: samuelmeuli/action-electron-builder@v1
