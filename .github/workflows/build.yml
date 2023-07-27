@@ -28,9 +28,6 @@ jobs:
             - name: Build
               run: npm run build
 
-            - name: Install second dependencies
-              run: npm --prefix ./electron ci
-
             - name: Build/release Electron app
               uses: samuelmeuli/action-electron-builder@v1
               with:
