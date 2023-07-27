@@ -18,7 +18,6 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 18
-                  cache-dependency-path: .**/package-lock.json
 
             - name: Build/release Electron app
               uses: samuelmeuli/action-electron-builder@v1
