@@ -36,10 +36,6 @@ jobs:
         strategy:
             matrix:
                 os: [macos-latest, ubuntu-latest, windows-latest]
-        
-        defaults:
-              run:
-                  working-directory: ./electron
 
         steps:
             - name: Check out Git repository
@@ -49,6 +45,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 18
+                  cache-dependency-path: ./electron/package-lock.json
 
             - name: Build/release Electron app
               uses: paneron/action-electron-builder@v1.8.1
