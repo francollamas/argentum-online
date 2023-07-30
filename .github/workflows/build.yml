@@ -35,4 +35,4 @@ jobs:
               run: npm --prefix ./electron run build
 
             - name: Install dependencies
-              run: npm --prefix ./electron run electron:make
+              run: npm --prefix ./electron run electron:publish
