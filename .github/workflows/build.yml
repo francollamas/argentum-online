@@ -5,7 +5,7 @@ on: push
 jobs:
     release:
         env:
-            GH_TOKEN: ${{ github.token }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         runs-on: ${{ matrix.os }}
 
