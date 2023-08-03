@@ -1,14 +1,14 @@
 {
-  "name": "Argentum Online",
-  "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "name": "argentum-online",
+  "version": "0.0.1",
+  "description": "Argentum Online",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Franco Llamas",
+    "email": "francollamas077@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/francollamas/argentum-online.git"
   },
   "license": "MIT",
   "main": "build/src/index.js",
@@ -17,10 +17,11 @@
     "electron:start-live": "node ./live-runner.js",
     "electron:start": "npm run build && electron --inspect=5858 ./",
     "electron:pack": "npm run build && electron-builder build --dir -c ./electron-builder.config.json",
-    "electron:make": "npm run build && electron-builder build -c ./electron-builder.config.json -p always"
+    "electron:make": "npm run build && electron-builder build -c ./electron-builder.config.json",
+    "electron:publish": "npm run build && electron-builder build -c ./electron-builder.config.json -p always"
   },
   "dependencies": {
-    "@capacitor-community/electron": "^4.1.1",
+    "@capacitor-community/electron": "^4.1.2",
     "chokidar": "~3.5.3",
     "electron-is-dev": "~2.0.0",
     "electron-serve": "~1.1.0",
@@ -30,7 +31,7 @@
   },
   "devDependencies": {
     "electron": "^19.0.0",
-    "electron-builder": "~22.14.13",
+    "electron-builder": "~24.6.2",
     "electron-rebuild": "^3.2.7",
     "typescript": "~4.3.5"
   },
