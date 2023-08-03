@@ -1,0 +1,38 @@
+name: Release
+
+on: push
+
+jobs:
+    release:
+        env:
+            GH_TOKEN: ${{ github.token }}
+
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [windows-latest, macos-latest, ubuntu-latest]
+
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build
+              run: npm run build
+
+            - name: Install Electron dependencies
+              run: npm --prefix ./electron ci
+
+            - name: Publish
+              run: npm --prefix ./electron run electron:publish
