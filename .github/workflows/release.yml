@@ -18,6 +18,10 @@ jobs:
         name: Draft a release
         runs-on: ubuntu-latest
         steps:
+            - name: Get Node project version
+              id: package-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
             - name: Draft
               uses: softprops/action-gh-release@v1
               with:
