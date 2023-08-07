@@ -76,7 +76,7 @@ jobs:
               run: npm run build
 
             - name: Build app bundle
-              run: cd android && ./gradlew bundle && ./gradlew assembleDebug
+              run: cd android && ./gradlew bundle && ./gradlew assembleDebug && ./gradlew assembleRelease
 
             - name: Extract android signing key from env
               run: |
