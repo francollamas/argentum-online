@@ -1,0 +1,36 @@
+name: Main
+
+on: push
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Build
+              run: echo Hola > Release.txt
+
+            - name: Test
+              run: cat Release.txt
+
+            - name: get-npm-version
+              id: package-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Release
+              uses: softprops/action-gh-release@v1
+              with:
+                  draft: true
+                  tag_name: v${{ steps.package-version.outputs.current-version}}
+                  files: |
+                      Release.txt
+                      LICENSE
