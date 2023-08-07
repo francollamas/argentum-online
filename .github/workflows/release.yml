@@ -83,17 +83,21 @@ jobs:
                   echo "${{ secrets.RELEASE_KEYSTORE }}" > android/release.jks.base64
                   base64 -d android/release.jks.base64 > android/release.decrypted.jks
 
-            - name: Sign dev build
-              run: jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab release
-
-            - name: Rename files
+            - name: Sign AAB and APK
               run: |
-                  mv ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/argentum-online-signed.aab
-                  mv ./android/app/build/outputs/apk/release/app-release-unsigned.apk ./android/app/build/outputs/apk/release/argentum-online-release-unsigned.apk
+                  jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab release
+                  jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/apk/release/app-release-signed.apk ./android/app/build/outputs/apk/release/app-release-unsigned.apk release
 
             - name: Get Node project version
               id: package-version
               uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Rename files
+              run: |
+                  ls ./android/app/build/outputs/bundle/release/
+                  ls ./android/app/build/outputs/apk/release/
+                  mv ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/argentum-online-${{ steps.package-version.outputs.current-version}}.aab
+                  mv ./android/app/build/outputs/apk/release/app-release-signed.apk ./android/app/build/outputs/apk/release/argentum-online-${{ steps.package-version.outputs.current-version}}.apk
 
             - name: Publish
               uses: softprops/action-gh-release@v1
@@ -101,5 +105,5 @@ jobs:
                   draft: true
                   tag_name: v${{ steps.package-version.outputs.current-version}}
                   files: |
-                      ./android/app/build/outputs/bundle/release/argentum-online-signed.aab
-                      ./android/app/build/outputs/apk/release/argentum-online-release-unsigned.apk
+                      ./android/app/build/outputs/bundle/release/argentum-online-${{ steps.package-version.outputs.current-version}}.aab
+                      ./android/app/build/outputs/apk/release/argentum-online-${{ steps.package-version.outputs.current-version}}.apk
