@@ -1,13 +1,6 @@
 name: Release
 
-on:
-    pull_request:
-        types:
-            - opened
-        branches:
-            - 'release/**'
-
-    workflow_dispatch:
+on: push
 
 jobs:
     desktop:
