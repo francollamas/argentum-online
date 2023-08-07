@@ -7,6 +7,10 @@ on:
         branches:
             - release/**
 
+    push:
+        branches:
+            - release/**
+
     workflow_dispatch:
 
 jobs:
