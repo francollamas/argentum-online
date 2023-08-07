@@ -18,6 +18,11 @@ jobs:
         name: Draft a release
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
+
             - name: Get Node project version
               id: package-version
               uses: martinbeentjes/npm-get-version-action@v1.3.1
