@@ -1,13 +1,43 @@
 name: Release
 
 on:
+    pull_request:
+        types:
+            - opened
+        branches:
+            - 'release/**'
+
     push:
-        branches: ['main']
+        branches:
+            - 'release/**'
 
     workflow_dispatch:
 
 jobs:
-    release:
+    draft:
+        name: Draft a release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Get Node project version
+              id: package-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Draft
+              uses: softprops/action-gh-release@v1
+              with:
+                  draft: true
+                  name: v${{ steps.package-version.outputs.current-version}}
+                  tag_name: v${{ steps.package-version.outputs.current-version}}
+                  generate_release_notes: true
+
+    desktop:
+        name: Build desktop installers
+        needs: draft
         env:
             GH_TOKEN: ${{ github.token }}
 
@@ -18,12 +48,12 @@ jobs:
                 os: [windows-latest, macos-latest, ubuntu-latest]
 
         steps:
-            - name: Check out Git repository
+            - name: Checkout repository
               uses: actions/checkout@v3
               with:
                   ref: ${{ github.head_ref }}
 
-            - name: Setup
+            - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
                   node-version: 18
@@ -35,8 +65,68 @@ jobs:
             - name: Build
               run: npm run build
 
-            - name: Install Electron dependencies
+            - name: Install ./electron dependencies
               run: npm --prefix ./electron ci
 
             - name: Publish
               run: npm --prefix ./electron run electron:publish
+
+    android:
+        name: Build Android installers
+        needs: draft
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup Java
+              uses: actions/setup-java@v3
+              with:
+                  distribution: 'zulu'
+                  java-version: '17'
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Create build folder
+              run: npm run build
+
+            - name: Build app bundle
+              run: cd android && ./gradlew bundle && ./gradlew assembleRelease
+
+            - name: Extract android signing key from env
+              run: |
+                  echo "${{ secrets.RELEASE_KEYSTORE }}" > android/release.jks.base64
+                  base64 -d android/release.jks.base64 > android/release.decrypted.jks
+
+            - name: Sign AAB and APK
+              run: |
+                  jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab release
+                  jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/apk/release/app-release-signed.apk ./android/app/build/outputs/apk/release/app-release-unsigned.apk release
+
+            - name: Get Node project version
+              id: package-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Rename files
+              run: |
+                  mv ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/argentum-online-${{ steps.package-version.outputs.current-version}}.aab
+                  mv ./android/app/build/outputs/apk/release/app-release-signed.apk ./android/app/build/outputs/apk/release/argentum-online-${{ steps.package-version.outputs.current-version}}.apk
+
+            - name: Publish
+              uses: softprops/action-gh-release@v1
+              with:
+                  draft: true
+                  name: v${{ steps.package-version.outputs.current-version}}
+                  tag_name: v${{ steps.package-version.outputs.current-version}}
+                  generate_release_notes: true
+                  files: |
+                      ./android/app/build/outputs/bundle/release/argentum-online-${{ steps.package-version.outputs.current-version}}.aab
+                      ./android/app/build/outputs/apk/release/argentum-online-${{ steps.package-version.outputs.current-version}}.apk

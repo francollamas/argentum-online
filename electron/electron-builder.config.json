@@ -26,6 +26,6 @@
     "target": "dmg"
   },
   "linux": {
-    "target": ["AppImage", "deb", "rpm", "zip", "tar.gz"]
+    "target": ["AppImage", "deb", "rpm", "tar.gz"]
   }
 }
