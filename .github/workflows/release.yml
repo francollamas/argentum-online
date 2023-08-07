@@ -76,7 +76,7 @@ jobs:
               run: npm run build
 
             - name: Build app bundle
-              run: cd android && ./gradlew bundle && ./gradlew assembleDebug && ./gradlew assembleRelease
+              run: cd android && ./gradlew bundle && ./gradlew assembleRelease
 
             - name: Extract android signing key from env
               run: |
@@ -87,7 +87,9 @@ jobs:
               run: jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab release
 
             - name: Check folder content of android output
-              run: ls ./android/app/build/outputs/bundle/release
+              run: |
+                  ls ./android/app/build/outputs/bundle/release
+                  ls ./android/app/build/outputs/apk/release
 
             - name: Get Node project version
               id: package-version
